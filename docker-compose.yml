@@ -44,17 +44,25 @@ services:
     networks:
       - local-network
     command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   minio-setup:
     container_name: minio-mc.dev.local
     image: docker.io/minio/mc
     depends_on:
-      - minio
+      minio:
+        condition: service_healthy
     entrypoint: /bin/sh
     command: >
       -c "mc alias set local http://minio.dev.local:9000 minio-admin minio-admin-password &&
-          mc mb --ignore-existing local/album-covers &&
-          mc anonymous set public local/album-covers"
+          mc mb --ignore-existing local/album-cover &&
+          mc anonymous set public local/album-cover &&
+          mc mb --ignore-existing local/artist-profile-image &&
+          mc anonymous set public local/artist-profile-image"
     networks:
       - local-network
 
@@ -62,6 +70,7 @@ volumes:
   postgres-data:
   pgadmin-data:
   minio-data:
+
 networks:
   local-network:
     driver: bridge
