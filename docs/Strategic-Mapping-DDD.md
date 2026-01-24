@@ -95,10 +95,7 @@ classDiagram
             +ImageReference profileImage
             +record(name, genre, profileImage)
             +update(name, genre)
-            +delete()
-            +uploadImage(image)
             +updateImage(image)
-            +removeImage()
         }
         class Album {
             <<Aggregate Root>>
@@ -109,10 +106,7 @@ classDiagram
             +Set~Artist~ artists
             +record(title, releaseDate, cover, artists)
             +update(title, releaseDate)
-            +delete()
-            +uploadImage(image)
             +updateImage(image)
-            +removeImage()
             +addArtist(artist)
             +removeArtist(artist)
         }
