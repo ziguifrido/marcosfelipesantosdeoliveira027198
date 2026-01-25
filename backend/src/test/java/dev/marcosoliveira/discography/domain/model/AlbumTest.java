@@ -17,16 +17,8 @@ class AlbumTest {
             "album-cover",
             "sdghfsdhsdhsdghsdgfhsdg",
             "image/png");
-    Artist linkinPark = Artist.record("Linkin Park", "Rock", ImageReference.of(
-            "artist-profile-image",
-            "sadfgsdafgsdfgsdfgsdfg",
-            "image/png"
-    ));
-    Artist jayZ = Artist.record("Jay-Z", "hip-hop", ImageReference.of(
-            "artist-profile-image",
-            "hsdfghsdgfsdfgsdfgsdfgsdfg",
-            "image/png"
-    ));
+    Artist linkinPark = Artist.record("Linkin Park", "Rock");
+    Artist jayZ = Artist.record("Jay-Z", "hip-hop");
 
     @Test
     void shouldCreateAlbum() {
@@ -36,9 +28,10 @@ class AlbumTest {
         Album album = Album.record(
                 title,
                 releaseDate,
-                cover,
                 artists
         );
+
+        album.uploadImage(cover);
 
         assertEquals(title, album.getTitle());
         assertEquals(releaseDate, album.getReleaseDate());
@@ -55,7 +48,6 @@ class AlbumTest {
             Album album = Album.record(
                     "",
                     releaseDate,
-                    cover,
                     artists
             );
         });
@@ -63,16 +55,6 @@ class AlbumTest {
         assertThrows(DomainException.class, () -> {
             Album album = Album.record(
                     title,
-                    null,
-                    cover,
-                    artists
-            );
-        });
-
-        assertThrows(DomainException.class, () -> {
-            Album album = Album.record(
-                    title,
-                    releaseDate,
                     null,
                     artists
             );
@@ -82,7 +64,6 @@ class AlbumTest {
             Album album = Album.record(
                     title,
                     releaseDate,
-                    cover,
                     null
             );
         });
@@ -96,7 +77,6 @@ class AlbumTest {
         Album album = Album.record(
                 "Collision Course",
                 LocalDate.of(2004, 11, 30),
-                cover,
                 artists
         );
 
@@ -115,7 +95,6 @@ class AlbumTest {
         Album album = Album.record(
                 title,
                 releaseDate,
-                cover,
                 artists
         );
 
