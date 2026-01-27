@@ -41,12 +41,11 @@ public class Artist extends AbstractAggregateRoot<Artist> {
     @Builder.Default
     private Set<Album> albums = new HashSet<>();
 
-    public static Artist record(String name, String genre, ImageReference profileImage) {
-        validate(name, genre, profileImage);
+    public static Artist record(String name, String genre) {
+        validate(name, genre);
         return Artist.builder()
                 .name(name)
                 .genre(genre)
-                .profileImage(profileImage)
                 .build();
     }
 
@@ -56,7 +55,7 @@ public class Artist extends AbstractAggregateRoot<Artist> {
         setGenre(genre);
     }
 
-    public void updateImage(ImageReference profileImage){
+    public void uploadImage(ImageReference profileImage){
         validate(profileImage);
         setProfileImage(profileImage);
     }
@@ -69,10 +68,4 @@ public class Artist extends AbstractAggregateRoot<Artist> {
     private static void validate(ImageReference profileImage) {
         if (profileImage == null) throw new DomainException("Profile Image cannot be empty!");
     }
-
-    private static void validate(String name, String genre, ImageReference profileImage) {
-        validate(name, genre);
-        validate(profileImage);
-    }
-
 }

@@ -22,9 +22,10 @@ class ArtistTest {
     void shouldCreateArtist() {
         Artist artist = Artist.record(
                 name,
-                genre,
-                profileImage
+                genre
         );
+
+        artist.uploadImage(profileImage);
 
         assertEquals(name, artist.getName());
         assertEquals(genre, artist.getGenre());
@@ -37,26 +38,17 @@ class ArtistTest {
         assertThrows(DomainException.class, () -> {
             Artist.record(
                     "",
-                    genre,
-                    profileImage
+                    genre
             );
         });
 
         assertThrows(DomainException.class, () -> {
             Artist.record(
                     name,
-                    "",
-                    profileImage
+                    ""
             );
         });
 
-        assertThrows(DomainException.class, () -> {
-            Artist.record(
-                    name,
-                    genre,
-                    null
-            );
-        });
     }
 
 
