@@ -21,6 +21,7 @@ public class Album extends AbstractAggregateRoot<Album> {
 
     @Id
     @EqualsAndHashCode.Include
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column(nullable = false)

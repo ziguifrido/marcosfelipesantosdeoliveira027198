@@ -17,11 +17,8 @@ import java.util.stream.Collectors;
 @Mapper(componentModel = "spring")
 public abstract class AlbumMapper {
 
-    private final StorageService storageService;
-
-    protected AlbumMapper(StorageService storageService) {
-        this.storageService = storageService;
-    }
+    @Autowired
+    protected StorageService storageService;
 
     @Mapping(target = "artistNames", source = "artists", qualifiedByName = "mapArtistNames")
     @Mapping(target = "coverUrl", source = "cover", qualifiedByName = "resolveCoverUrl")

@@ -5,6 +5,7 @@ import dev.marcosoliveira.discography.api.dto.AlbumResponseDTO;
 import dev.marcosoliveira.discography.api.mapper.AlbumMapper;
 import dev.marcosoliveira.discography.application.service.AlbumService;
 import dev.marcosoliveira.discography.domain.model.Album;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -44,7 +45,8 @@ public class AlbumController {
 
     @PostMapping
     public ResponseEntity<AlbumResponseDTO> create(
-            @RequestBody AlbumRequestDTO request, @RequestParam("file")MultipartFile file) throws IOException {
+            @RequestPart("request") @Valid AlbumRequestDTO request,
+            @RequestPart("file") MultipartFile file) throws IOException {
         Album album = albumService.createAlbum(
                 request.getTitle(),
                 request.getReleaseDate(),
@@ -62,7 +64,8 @@ public class AlbumController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateAlbum(@PathVariable UUID id, @RequestBody AlbumRequestDTO request) {
+    public ResponseEntity<Void> updateAlbum(@PathVariable UUID id,
+                                            @RequestBody @Valid AlbumRequestDTO request) {
         albumService.updateAlbum(id, request.getTitle(), request.getReleaseDate(), request.getArtistIds());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

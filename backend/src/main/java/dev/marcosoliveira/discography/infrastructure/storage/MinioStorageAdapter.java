@@ -18,7 +18,7 @@ public class MinioStorageAdapter implements StoragePort {
     }
 
     @Override
-    public String upload(String bucket, String fileName, InputStream inputStream, String contentType) {
+    public void upload(String bucket, String fileName, InputStream inputStream, String contentType) {
         try {
             if (bucketNotExists(bucket)) {
                 minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucket).build());
@@ -33,7 +33,6 @@ public class MinioStorageAdapter implements StoragePort {
                             .build()
             );
 
-            return fileName;
         } catch (Exception e) {
             throw new RuntimeException("Upload Error: " + e.getLocalizedMessage(), e);
         }

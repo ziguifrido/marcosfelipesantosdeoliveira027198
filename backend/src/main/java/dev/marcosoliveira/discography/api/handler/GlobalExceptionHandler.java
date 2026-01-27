@@ -17,7 +17,7 @@ public class GlobalExceptionHandler {
         ErrorDetails errorDetails = ErrorDetails.builder()
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.NOT_FOUND.value())
-                .error("Resource not found")
+                .error("Resource Not Found")
                 .message(e.getMessage())
                 .path(request.getDescription(false).replace("uri", ""))
                 .build();

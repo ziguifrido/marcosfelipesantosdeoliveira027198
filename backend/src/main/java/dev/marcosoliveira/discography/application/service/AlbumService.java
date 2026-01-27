@@ -10,7 +10,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.io.InputStream;
 import java.time.LocalDate;
@@ -18,7 +17,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class AlbumService {
@@ -105,14 +103,6 @@ public class AlbumService {
             storageService.delete(album.getCover());
 
         album.getArtists().forEach(artist -> artist.getAlbums().remove(album));
-
-        album.getArtists().forEach(artist -> {
-            if (artist.getAlbums().isEmpty()) {
-                if (artist.getProfileImage() != null)
-                    storageService.delete(artist.getProfileImage());
-                artistRepository.delete(artist);
-            }
-        });
 
         albumRepository.delete(album);
     }

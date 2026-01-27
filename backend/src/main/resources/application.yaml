@@ -1,11 +1,19 @@
 spring:
   application:
     name: Discography API
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/discography_db}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres-user}
+    password: ${SPRING_DATASOURCE_PASSWORD:postgres-password}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create
 
 minio:
-  url: http://localhost:9000
-  access-key: minio-admin
-  secret-key: minio-admin-password
+  url: ${MINIO_URL:http://localhost:9000}
+  access-key: ${MINIO_ACCESS_KEY:minio-admin}
+  secret-key: ${MINIO_SECRET_KEY:minio-admin-password}
 
 server:
   port: 8080

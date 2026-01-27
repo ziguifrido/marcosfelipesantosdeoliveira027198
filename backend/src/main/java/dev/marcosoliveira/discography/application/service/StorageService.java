@@ -27,7 +27,7 @@ public class StorageService {
     }
 
     public ImageReference uploadAlbumCover(UUID albumId, InputStream content, String contentType) {
-        String filename = String.format("artist_%s_%d", albumId, System.currentTimeMillis());
+        String filename = String.format("album_%s_%d", albumId, System.currentTimeMillis());
 
         storagePort.upload(ALBUM_BUCKET, filename, content, contentType);
 

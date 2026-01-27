@@ -4,7 +4,7 @@ import java.io.InputStream;
 
 public interface StoragePort {
 
-    String upload(String bucket, String fileName, InputStream inputStream, String contentType);
+    void upload(String bucket, String fileName, InputStream inputStream, String contentType);
 
     void delete(String bucket, String fileName);
 
