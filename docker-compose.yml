@@ -1,5 +1,4 @@
 services:
-  # Database: PostgreSQL
   postgres:
     container_name: postgres.dev.local
     image: docker.io/library/postgres:17.5
@@ -10,7 +9,13 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
     ports:
-      - 5432:5432
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres-user -d discography_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
     networks:
       - local-network
 
@@ -23,13 +28,12 @@ services:
       PGADMIN_DEFAULT_EMAIL: pgadmin@mail.com
       PGADMIN_DEFAULT_PASSWORD: pgadmin-password
     ports:
-      - 8083:80
+      - "8083:80"
     volumes:
       - pgadmin-data:/var/lib/pgadmin
     networks:
       - local-network
 
-  # Object Storage: MinIO
   minio:
     container_name: minio.dev.local
     image: docker.io/minio/minio
@@ -65,6 +69,29 @@ services:
           mc anonymous set public local/artist-profile-image"
     networks:
       - local-network
+
+  backend:
+    container_name: app.dev.local
+    build:
+      context: backend/
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio-setup:
+        condition: service_completed_successfully
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres.dev.local:5432/discography_db
+      SPRING_DATASOURCE_USERNAME: postgres-user
+      SPRING_DATASOURCE_PASSWORD: postgres-password
+      MINIO_URL: http://minio.dev.local:9000
+      MINIO_ACCESS_KEY: minio-admin
+      MINIO_SECRET_KEY: minio-admin-password
+    networks:
+      - local-network
+    restart: on-failure
 
 volumes:
   postgres-data:
