@@ -21,9 +21,10 @@ docker-compose up -d
 
 This will start the following services in the background:
 
-- **PostgreSQL**: A relational database.
+- **PostgreSQL**: A relational database with health checks.
 - **pgAdmin**: A web interface for managing PostgreSQL.
 - **MinIO**: An S3-compatible object storage service.
+- **Backend**: Spring Boot application running on port 8080.
 
 ### Services
 
@@ -32,7 +33,18 @@ The `docker-compose.yml` file defines the following services:
 | Service      | Description                                      | Port(s)    | Credentials / URL                                                                                           |
 |--------------|--------------------------------------------------|------------|-------------------------------------------------------------------------------------------------------------|
 | **PostgreSQL** | Relational database for storing data.            | `5432`     | **Database**: `discography_db`<br>**User**: `postgres-user`<br>**Password**: `postgres-password`            |
-| **pgAdmin**    | Web-based administration console for PostgreSQL. | `8083`     | **Email**: `pgadmin@mail.com`<br>**Password**: `pgadmin-password`<br>**URL**: http://localhost:8083         |
+| **pgAdmin**    | Web-based administration console for PostgreSQL. | `8083`     | **Email**: `pgadmin@mail.com`<br>**Password**: `pgadmin-password`<br>URL**: http://localhost:8083         |
 | **MinIO**      | S3-compatible object storage.                    | `9000:9001`  | **User**: `minio-admin`<br>**Password**: `minio-admin-password`<br>**Admin Console**: http://localhost:9001 |
+| **Backend**    | Spring Boot REST API with WebSocket support.     | `8080`     | **URL**: http://localhost:8080<br>**API Docs**: http://localhost:8080/swagger-ui.html (if available) |
 
-The `minio-setup` service will automatically create a bucket named `album-covers` and set its access policy to public.
+The `minio-setup` service will automatically create buckets named `album-cover` and `artist-profile-image` and set their access policies to public.
+
+### API Documentation
+
+The backend service includes OpenAPI specification located in `docs/openapi.yaml`. This file contains comprehensive documentation for all available REST endpoints including:
+
+- Artist management endpoints with pagination support
+- Album management endpoints with full CRUD operations
+- Proper request/response schemas and validation rules
+
+You can view the OpenAPI specification directly by opening the `docs/openapi.yaml` file or use tools like Postman or Insomnia to generate interactive documentation from the specification file.
