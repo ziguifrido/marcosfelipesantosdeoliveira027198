@@ -6,6 +6,7 @@ import dev.marcosoliveira.discography.api.mapper.ArtistMapper;
 import dev.marcosoliveira.discography.application.service.ArtistService;
 import dev.marcosoliveira.discography.domain.model.Artist;
 import jakarta.validation.Valid;
+import jakarta.websocket.server.PathParam;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -31,7 +32,7 @@ public class ArtistController {
 
     @GetMapping
     public ResponseEntity<Page<ArtistResponseDTO>> findAll(
-            @PageableDefault(size = 10, sort = "name")Pageable pageable) {
+            @PageableDefault(size = 10, sort = "name") Pageable pageable) {
         Page<Artist> artistPage = artistService.findAll(pageable);
         Page<ArtistResponseDTO> responsePage = artistPage.map(artistMapper::toResponseDto);
         return ResponseEntity.ok(responsePage);
@@ -41,6 +42,30 @@ public class ArtistController {
     public ResponseEntity<ArtistResponseDTO> findById(@PathVariable UUID id) {
         Artist artist = artistService.findById(id);
         return ResponseEntity.ok(artistMapper.toResponseDto(artist));
+    }
+
+    @GetMapping("/name/{name}")
+    public ResponseEntity<Page<ArtistResponseDTO>> findByName(
+            @PathVariable String name, @PageableDefault(size = 10, sort = "name") Pageable pageable) {
+        Page<Artist> artistPage = artistService.findByName(name, pageable);
+        Page<ArtistResponseDTO> responsePage = artistPage.map(artistMapper::toResponseDto);
+        return ResponseEntity.ok(responsePage);
+    }
+
+    @GetMapping("/genre/{genre}")
+    public ResponseEntity<Page<ArtistResponseDTO>> findByGenre(
+            @PathVariable String genre, @PageableDefault(size = 10, sort = "name") Pageable pageable) {
+        Page<Artist> artistPage = artistService.findByGenre(genre, pageable);
+        Page<ArtistResponseDTO> responsePage = artistPage.map(artistMapper::toResponseDto);
+        return ResponseEntity.ok(responsePage);
+    }
+
+    @GetMapping("/album/{id}")
+    public ResponseEntity<Page<ArtistResponseDTO>> findByAlbumId(
+            @PathVariable UUID id, @PageableDefault(size = 10, sort = "name") Pageable pageable) {
+        Page<Artist> artistPage = artistService.findByAlbumId(id, pageable);
+        Page<ArtistResponseDTO> responsePage = artistPage.map(artistMapper::toResponseDto);
+        return ResponseEntity.ok(responsePage);
     }
 
     @PostMapping

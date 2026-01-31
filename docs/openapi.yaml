@@ -206,6 +206,238 @@ paths:
         '204':
           description: Artist deleted successfully
 
+  /api/v1/artists/name/{name}:
+    get:
+      tags:
+        - Artists
+      summary: Find artists by name
+      description: Search for artists by name with pagination support
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Artist name to search for
+            example: "Beatles"
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: List of matching artists
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ArtistResponseDTO'
+                  pageable:
+                    type: object
+                    properties:
+                      sort:
+                        type: object
+                      offset:
+                        type: integer
+                      pageNumber:
+                        type: integer
+                      pageSize:
+                        type: integer
+                      paged:
+                        type: boolean
+                      unpaged:
+                        type: boolean
+                  last:
+                    type: boolean
+                  totalPages:
+                    type: integer
+                  totalElements:
+                    type: integer
+                  size:
+                    type: integer
+                  number:
+                    type: integer
+                  sort:
+                    type: object
+                    properties:
+                      empty:
+                        type: boolean
+                      sorted:
+                        type: boolean
+                      unsorted:
+                        type: boolean
+                  first:
+                    type: boolean
+                  numberOfElements:
+                    type: integer
+                  empty:
+                    type: boolean
+
+  /api/v1/artists/genre/{genre}:
+    get:
+      tags:
+        - Artists
+      summary: Find artists by genre
+      description: Search for artists by music genre with pagination support
+      parameters:
+        - name: genre
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Music genre to search for
+            example: "Rock"
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: List of artists in the specified genre
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ArtistResponseDTO'
+                  pageable:
+                    type: object
+                    properties:
+                      sort:
+                        type: object
+                      offset:
+                        type: integer
+                      pageNumber:
+                        type: integer
+                      pageSize:
+                        type: integer
+                      paged:
+                        type: boolean
+                      unpaged:
+                        type: boolean
+                  last:
+                    type: boolean
+                  totalPages:
+                    type: integer
+                  totalElements:
+                    type: integer
+                  size:
+                    type: integer
+                  number:
+                    type: integer
+                  sort:
+                    type: object
+                    properties:
+                      empty:
+                        type: boolean
+                      sorted:
+                        type: boolean
+                      unsorted:
+                        type: boolean
+                  first:
+                    type: boolean
+                  numberOfElements:
+                    type: integer
+                  empty:
+                    type: boolean
+
+  /api/v1/artists/album/{id}:
+    get:
+      tags:
+        - Artists
+      summary: Find artists by album ID
+      description: Find all artists associated with a specific album
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            description: Album UUID
+            example: "550e8400-e29b-41d4-a716-446655440002"
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: List of artists associated with the album
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ArtistResponseDTO'
+                  pageable:
+                    type: object
+                    properties:
+                      sort:
+                        type: object
+                      offset:
+                        type: integer
+                      pageNumber:
+                        type: integer
+                      pageSize:
+                        type: integer
+                      paged:
+                        type: boolean
+                      unpaged:
+                        type: boolean
+                  last:
+                    type: boolean
+                  totalPages:
+                    type: integer
+                  totalElements:
+                    type: integer
+                  size:
+                    type: integer
+                  number:
+                    type: integer
+                  sort:
+                    type: object
+                    properties:
+                      empty:
+                        type: boolean
+                      sorted:
+                        type: boolean
+                      unsorted:
+                        type: boolean
+                  first:
+                    type: boolean
+                  numberOfElements:
+                    type: integer
+                  empty:
+                    type: boolean
+
   /api/v1/artists/{id}/profileImage:
     put:
       tags:
@@ -219,7 +451,7 @@ paths:
           schema:
             type: string
             format: uuid
-          example: "550e8400-e29b-41d4-a716-446655440000"
+            example: "550e8400-e29b-41d4-a716-446655440000"
       requestBody:
         required: true
         content:
@@ -451,6 +683,247 @@ paths:
         '204':
           description: Album deleted successfully
 
+  /api/v1/albums/title/{title}:
+    get:
+      tags:
+        - Albums
+      summary: Find albums by title
+      description: Search for albums by title with pagination support
+      parameters:
+        - name: title
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Album title to search for
+            example: "Abbey Road"
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: List of matching albums
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AlbumResponseDTO'
+                  pageable:
+                    type: object
+                    properties:
+                      sort:
+                        type: object
+                      offset:
+                        type: integer
+                      pageNumber:
+                        type: integer
+                      pageSize:
+                        type: integer
+                      paged:
+                        type: boolean
+                      unpaged:
+                        type: boolean
+                  last:
+                    type: boolean
+                  totalPages:
+                    type: integer
+                  totalElements:
+                    type: integer
+                  size:
+                    type: integer
+                  number:
+                    type: integer
+                  sort:
+                    type: object
+                    properties:
+                      empty:
+                        type: boolean
+                      sorted:
+                        type: boolean
+                      unsorted:
+                        type: boolean
+                  first:
+                    type: boolean
+                  numberOfElements:
+                    type: integer
+                  empty:
+                    type: boolean
+
+  /api/v1/albums/releaseDate/:
+    get:
+      tags:
+        - Albums
+      summary: Find albums by release date range
+      description: Search for albums by release date range with pagination support
+      parameters:
+        - name: after
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+            description: Filter for albums released after this date
+            example: "1969-01-01"
+        - name: before
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+            description: Filter for albums released before this date
+            example: "1970-12-31"
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: List of albums within the specified date range
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AlbumResponseDTO'
+                  pageable:
+                    type: object
+                    properties:
+                      sort:
+                        type: object
+                      offset:
+                        type: integer
+                      pageNumber:
+                        type: integer
+                      pageSize:
+                        type: integer
+                      paged:
+                        type: boolean
+                      unpaged:
+                        type: boolean
+                  last:
+                    type: boolean
+                  totalPages:
+                    type: integer
+                  totalElements:
+                    type: integer
+                  size:
+                    type: integer
+                  number:
+                    type: integer
+                  sort:
+                    type: object
+                    properties:
+                      empty:
+                        type: boolean
+                      sorted:
+                        type: boolean
+                      unsorted:
+                        type: boolean
+                  first:
+                    type: boolean
+                  numberOfElements:
+                    type: integer
+                  empty:
+                    type: boolean
+
+  /api/v1/albums/artist/{id}:
+    get:
+      tags:
+        - Albums
+      summary: Find albums by artist ID
+      description: Find all albums associated with a specific artist
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            description: Artist UUID
+            example: "550e8400-e29b-41d4-a716-446655440000"
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: List of albums by the specified artist
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AlbumResponseDTO'
+                  pageable:
+                    type: object
+                    properties:
+                      sort:
+                        type: object
+                      offset:
+                        type: integer
+                      pageNumber:
+                        type: integer
+                      pageSize:
+                        type: integer
+                      paged:
+                        type: boolean
+                      unpaged:
+                        type: boolean
+                  last:
+                    type: boolean
+                  totalPages:
+                    type: integer
+                  totalElements:
+                    type: integer
+                  size:
+                    type: integer
+                  number:
+                    type: integer
+                  sort:
+                    type: object
+                    properties:
+                      empty:
+                        type: boolean
+                      sorted:
+                        type: boolean
+                      unsorted:
+                        type: boolean
+                  first:
+                    type: boolean
+                  numberOfElements:
+                    type: integer
+                  empty:
+                    type: boolean
+
   /api/v1/albums/{id}/cover:
     put:
       tags:
@@ -464,7 +937,7 @@ paths:
           schema:
             type: string
             format: uuid
-          example: "550e8400-e29b-41d4-a716-446655440002"
+            example: "550e8400-e29b-41d4-a716-446655440002"
       requestBody:
         required: true
         content:

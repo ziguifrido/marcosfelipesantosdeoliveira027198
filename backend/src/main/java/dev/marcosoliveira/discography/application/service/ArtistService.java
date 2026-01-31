@@ -34,6 +34,18 @@ public class ArtistService {
                 .orElseThrow(() -> new ResourceNotFoundException("Artist", artistId));
     }
 
+    public Page<Artist> findByName(String name, Pageable pageable) {
+        return artistRepository.findByNameContainingIgnoreCase(name, pageable);
+    }
+
+    public Page<Artist> findByGenre(String genre, Pageable pageable) {
+        return artistRepository.findByGenreContainingIgnoreCase(genre, pageable);
+    }
+
+    public Page<Artist> findByAlbumId(UUID albumId, Pageable pageable) {
+        return artistRepository.findByAlbumId(albumId, pageable);
+    }
+
     @Transactional
     public Artist createArtist(String name, String genre) {
         Artist artist = Artist.record(name, genre);

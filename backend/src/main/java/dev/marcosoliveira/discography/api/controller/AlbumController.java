@@ -9,12 +9,14 @@ import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @RestController
@@ -42,6 +44,33 @@ public class AlbumController {
         Album album = albumService.findById(id);
         return ResponseEntity.ok(albumMapper.toResponseDto(album));
     }
+
+    @GetMapping("/title/{title}")
+    public ResponseEntity<Page<AlbumResponseDTO>> findByTitle(
+            @PathVariable String title, @PageableDefault(size = 10, sort = "title") Pageable pageable) {
+        Page<Album> albumPage = albumService.findByTitle(title, pageable);
+        Page<AlbumResponseDTO> responsePage = albumPage.map(albumMapper::toResponseDto);
+        return ResponseEntity.ok(responsePage);
+    }
+
+    @GetMapping("/releaseDate/")
+    public ResponseEntity<Page<AlbumResponseDTO>> findByReleaseDate(
+                @RequestParam(value = "after", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate after,
+                @RequestParam(value = "before", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate before,
+                @PageableDefault(size = 10, sort = "title") Pageable pageable) {
+        Page<Album> albumPage = albumService.findByReleaseDate(after, before, pageable);
+        Page<AlbumResponseDTO> responsePage = albumPage.map(albumMapper::toResponseDto);
+        return ResponseEntity.ok(responsePage);
+    }
+
+    @GetMapping("/artist/{id}")
+    public ResponseEntity<Page<AlbumResponseDTO>> findByArtistId(
+            @PathVariable UUID id, @PageableDefault(size = 10, sort = "title") Pageable pageable) {
+        Page<Album> albumPage = albumService.findByArtistId(id, pageable);
+        Page<AlbumResponseDTO> responsePage = albumPage.map(albumMapper::toResponseDto);
+        return ResponseEntity.ok(responsePage);
+    }
+
 
     @PostMapping
     public ResponseEntity<AlbumResponseDTO> create(

@@ -41,6 +41,27 @@ public class AlbumService {
                 .orElseThrow(() -> new ResourceNotFoundException("Album", albumId));
     }
 
+    public Page<Album> findByTitle(String title, Pageable pageable) {
+        return albumRepository.findByTitleContainsIgnoreCase(title, pageable);
+    }
+
+    public Page<Album> findByReleaseDate(LocalDate after, LocalDate before, Pageable pageable) {
+        if (after == null && before == null)
+            return Page.empty(pageable);
+
+        if (after == null)
+            return albumRepository.findByReleaseDateBefore(before, pageable);
+
+        if (before == null)
+            return albumRepository.findByReleaseDateAfter(after, pageable);
+
+        return albumRepository.findByReleaseDateBetween(after, before, pageable);
+    }
+
+    public Page<Album> findByArtistId(UUID artistId, Pageable pageable) {
+        return albumRepository.findByArtistId(artistId, pageable);
+    }
+
     @Transactional
     public Album createAlbum(String title, LocalDate releaseDate, List<UUID> artistIds) {
         List<Artist> artistList = artistRepository.findAllById(artistIds);
