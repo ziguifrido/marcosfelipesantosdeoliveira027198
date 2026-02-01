@@ -20,6 +20,6 @@ public interface AlbumRepository extends JpaRepository<Album, UUID> {
 
     Page<Album> findByReleaseDateBetween(LocalDate releaseDateAfter, LocalDate releaseDateBefore, Pageable pageable);
 
-    @Query("SELECT alb FROM Album alb JOIN Artist a WHERE a.id = :artistId")
+    @Query("SELECT alb FROM Album alb JOIN alb.artists a WHERE a.id = :artistId")
     Page<Album> findByArtistId(@Param("artistId") UUID artirstId, Pageable pageable);
 }
