@@ -1,3 +1,11 @@
+api:
+  info:
+    title: "Discography API"
+    version: "0.0.1-SNAPSHOT"
+    description: "Discography API"
+    contact-name: "Marcos Oliveira"
+    contact-email: "fake@email.com"
+
 spring:
   application:
     name: Discography API
