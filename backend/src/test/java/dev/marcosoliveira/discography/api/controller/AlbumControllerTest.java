@@ -9,6 +9,7 @@ import dev.marcosoliveira.discography.domain.exception.ResourceNotFoundException
 import dev.marcosoliveira.discography.domain.model.Album;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
@@ -18,6 +19,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
+
+import dev.marcosoliveira.discography.TestConfig;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -29,6 +34,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(AlbumController.class)
+@Import(TestConfig.class)
+@ActiveProfiles("test")
+@AutoConfigureMockMvc(addFilters = false)
 class AlbumControllerTest {
 
     @Autowired
