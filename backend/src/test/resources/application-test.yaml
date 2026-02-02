@@ -1,0 +1,7 @@
+jwt:
+  secret-key: Y29tcGxleC1zZWNyZXQta2V5LWZvci1qd3QtdG9rZW5zLWVuY291Z2gtY2hhbGxlbmdlLTIwMjY=
+
+minio:
+  url: http://localhost:9000
+  access-key: minio-admin
+  secret-key: minio-admin-password

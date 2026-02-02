@@ -10,13 +10,21 @@ spring:
   application:
     name: Discography API
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/discography_db}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://postgres.dev.local:5432/discography_db}
     username: ${SPRING_DATASOURCE_USERNAME:postgres-user}
     password: ${SPRING_DATASOURCE_PASSWORD:postgres-password}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: validate
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    validate-on-migrate: true
+    schemas: public
 
 minio:
   url: ${MINIO_URL:http://localhost:9000}
@@ -25,3 +33,20 @@ minio:
 
 server:
   port: 8080
+
+jwt:
+  secret-key: ${JWT_SECRET_KEY:Y29tcGxleC1zZWNyZXQta2V5LWZvci1qd3QtdG9rZW5zLWVuY291Z2gtY2hhbGxlbmdlLTIwMjY=}
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+  scalar:
+    enabled: true
+    path: /scalar
+
