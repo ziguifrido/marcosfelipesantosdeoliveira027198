@@ -1,6 +1,6 @@
-# SEPLAG-MT 2026 Full Stack Challenge - Marcos Oliveira
+# SEPLAG-MT 2026 Backend Challenge - Marcos Oliveira
 
-Senior Full Stack solution (Java/Angular) architected with DDD for the SEPLAG-MT 2026 challenge. Features real-time WebSocket notifications, Facade pattern, and O(n) data synchronization.
+Backend API solution (Java/Spring Boot) for the SEPLAG-MT 2026 challenge. Implements JWT authentication, image upload to MinIO, rate limiting, and comprehensive API documentation.
 
 ## Getting Started
 
@@ -30,14 +30,40 @@ This will start the following services in the background:
 
 The `docker-compose.yml` file defines the following services:
 
-| Service      | Description                                      | Port(s)    | Credentials / URL                                                                                           |
-|--------------|--------------------------------------------------|------------|-------------------------------------------------------------------------------------------------------------|
-| **PostgreSQL** | Relational database for storing data.            | `5432`     | **Database**: `discography_db`<br>**User**: `postgres-user`<br>**Password**: `postgres-password`            |
-| **pgAdmin**    | Web-based administration console for PostgreSQL. | `8083`     | **Email**: `pgadmin@mail.com`<br>**Password**: `pgadmin-password`<br>URL**: http://localhost:8083         |
-| **MinIO**      | S3-compatible object storage.                    | `9000:9001`  | **User**: `minio-admin`<br>**Password**: `minio-admin-password`<br>**Admin Console**: http://localhost:9001 |
-| **Backend**    | Spring Boot REST API with WebSocket support.     | `8080`     | **URL**: http://localhost:8080<br>**Swagger UI**: http://localhost:8080/swagger-ui.html<br>**Scalar**: http://localhost:8080/scalar |
+| Service         | Description                                      | Port(s) | Credentials / URL                                                                                                                   |
+|-----------------|--------------------------------------------------|---------|-------------------------------------------------------------------------------------------------------------------------------------|
+| **PostgreSQL**  | Relational database for storing data.            | `5432`  | **Database**: `discography_db`<br>**User**: `postgres-user`<br>**Password**: `postgres-password`                                    |
+| **pgAdmin**     | Web-based administration console for PostgreSQL. | `8083`  | **Email**: `pgadmin@mail.com`<br>**Password**: `pgadmin-password`<br>**URL**: http://localhost:8083                                 |
+| **MinIO**       | S3-compatible object storage (internal).         | `9001`  | **User**: `minio-admin`<br>**Password**: `minio-admin-password`<br>**Admin Console**: http://localhost:9001                         |
+| **nginx-minio** | Reverse proxy for MinIO presigned URLs.          | `9000`  | Proxies requests from localhost:9000 to MinIO container                                                                             |
+| **Backend**     | Spring Boot REST API.                            | `8080`  | **URL**: http://localhost:8080<br>**Swagger UI**: http://localhost:8080/swagger-ui.html<br>**Scalar**: http://localhost:8080/scalar |
 
 The `minio-setup` service will automatically create buckets named `album-cover` and `artist-profile-image` and set their access policies to public.
+
+### MinIO Nginx Proxy
+
+To ensure presigned URLs work correctly from both the backend and browser, the setup uses an **nginx reverse proxy**:
+
+**The Problem:**
+- Backend connects to MinIO using the internal Docker hostname (`minio.dev.local:9000`)
+- MinIO generates presigned URLs signed for that hostname
+- Browser cannot resolve `minio.dev.local`, and changing the URL hostname invalidates the signature
+
+**The Solution:**
+An nginx proxy container listens on `localhost:9000` and proxies requests to the MinIO container:
+
+```
+Browser/Backend → localhost:9000 → nginx → minio.dev.local:9000
+```
+
+**Configuration:**
+- MinIO is configured with `MINIO_SERVER_URL: http://localhost:9000` to generate presigned URLs with localhost
+- The backend connects to `http://localhost:9000` (resolved via `extra_hosts: - "localhost:host-gateway"`)
+- Both browser and backend use the same hostname, so signatures remain valid
+
+**Key Files:**
+- `nginx-minio.conf` - Nginx configuration
+- `docker-compose.yml` - Service orchestration
 
 ### API Documentation
 
@@ -70,3 +96,184 @@ Both interfaces provide complete documentation for:
 - **HTTP Status Codes**: Complete list of possible responses (200, 201, 204, 400, 404, 415)
 
 The API documentation is automatically generated from the Spring annotations (`@Operation`, `@ApiResponse`, `@Schema`) in the controller and DTO classes.
+
+## Rate Limiting
+
+The API implements rate limiting using **Bucket4J** to protect against abuse and ensure fair usage across all clients.
+
+### Configuration
+
+- **Limit**: 10 requests per minute per IP address
+- **Algorithm**: Token bucket with interval refill
+- **Library**: Bucket4J 8.16.0 
+
+### How It Works
+
+1. Each unique IP address gets its own token bucket
+2. The bucket starts with 10 tokens and refills 10 tokens every minute
+3. Each API request consumes 1 token
+4. When the bucket is empty (0 tokens), subsequent requests receive HTTP 429 (Too Many Requests)
+5. The filter runs with highest precedence, executing before security filters
+
+### Implementation Details
+
+The rate limiting is implemented via `RateLimitFilter` (`infrastructure/security/RateLimitFilter.java`):
+
+- Automatically registered as a Servlet Filter with `@Order(Ordered.HIGHEST_PRECEDENCE)`
+- Uses `Bandwidth.builder()` with `refillIntervally()` (non-deprecated API)
+- Supports `X-Forwarded-For` header for proxy environments
+- In-memory bucket storage using `ConcurrentHashMap`
+
+### Response When Limit Exceeded
+
+```json
+{
+  "error": "Too Many Requests",
+  "message": "Rate limit exceeded. Try again later."
+}
+```
+
+**Status Code**: 429
+
+## Database Migrations (Flyway)
+
+The application uses **Flyway** for database version control and migration management, ensuring consistent schema evolution across all environments.
+
+### Overview
+
+- **Library**: Flyway 11.x with PostgreSQL support
+- **Location**: `backend/src/main/resources/db/migration/`
+- **Naming Convention**: `V{version}__{Description}.sql`
+- **Strategy**: Versioned migrations with automatic execution on startup
+- **Baseline**: Migrations start from empty database
+
+### Migration Files
+
+| Version | File                                    | Description                                                            |
+|---------|-----------------------------------------|------------------------------------------------------------------------|
+| **V1**  | `V1__Create_Tables.sql`                 | Initial schema creation - users, artists, albums, and junction tables  |
+| **V2**  | `V2__Default_Users_and_Sample_Data.sql` | Default users (admin/user) and sample data (Linkin Park similar bands) |
+
+### Schema Structure
+
+#### V1 - Database Schema
+
+Creates the following tables:
+
+- **`users`**: JWT authentication table with username, password (BCrypt), and role
+- **`artist`**: Artist information with profile image metadata (bucket, object key, content type)
+- **`album`**: Album information with cover image metadata and release date
+- **`album_artists`**: Many-to-many junction table linking albums to artists
+
+**Indexes created**:
+- `idx_artist_name` - For fast artist searches
+- `idx_album_title` - For fast album searches
+- `idx_album_release_date` - For date filtering
+- `idx_users_username` - For authentication lookups
+
+#### V2 - Sample Data
+
+**Default Users**:
+
+| Username | Password | Role  |
+|----------|----------|-------|
+| `admin`  | admin123 | ADMIN |
+| `user`   | user123  | USER  |
+
+**Sample Artists**:
+- Linkin Park, Breaking Benjamin, Three Days Grace, Seether, Disturbed, Chevelle, Staind, Papa Roach
+
+**Sample Albums**:
+- Linkin Park: Hybrid Theory, Meteora, Minutes to Midnight
+- Breaking Benjamin: Phobia, Dear Agony
+- Three Days Grace: One-X, Life Starts Now
+
+### Configuration
+
+Flyway is auto-configured by Spring Boot with these properties:
+
+```yaml
+spring:
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    validate-on-migrate: true
+```
+
+### Migration Behavior
+
+1. **On Application Startup**: Flyway automatically checks and executes pending migrations
+2. **Version Tracking**: Successfully executed migrations are recorded in `flyway_schema_history` table
+3. **Validation**: Migrations are validated for integrity before execution
+4. **Idempotency**: All migrations use `IF NOT EXISTS` to prevent errors on re-runs
+5. **Rollback**: No automatic rollback; migrations must be carefully tested before deployment
+
+### Best Practices Followed
+
+- **Idempotent DDL**: All `CREATE` statements use `IF NOT EXISTS`
+- **Explicit Constraints**: Foreign keys with `ON DELETE CASCADE` for referential integrity
+- **Performance**: Strategic indexes on frequently queried columns
+- **Data Integrity**: UUID primary keys and proper data types
+- **Documentation**: Each migration file includes descriptive comments
+
+### Monitoring
+
+View migration status via Actuator endpoint:
+- **URL**: http://localhost:8080/actuator/flyway
+- Shows: Applied migrations, pending migrations, execution history, success/failure status
+
+## Health Check
+
+The application includes comprehensive health monitoring through **Spring Boot Actuator**.
+
+### Endpoints
+
+| Endpoint               | Description                           | Access |
+|------------------------|---------------------------------------|--------|
+| `/actuator/health`     | Overall application health status     | Public |
+| `/actuator/info`       | Application information               | Public |
+| `/actuator/metrics`    | Detailed metrics (JVM, HTTP, etc.)    | Public |
+| `/actuator/prometheus` | Prometheus-compatible metrics         | Public |
+| `/actuator/flyway`     | Database migration status and history | Public |
+
+### Health Indicators
+
+The health endpoint provides status for:
+- **Database**: PostgreSQL connection status
+- **Disk Space**: Available storage
+- **Application**: Overall system health
+
+### Example Response
+
+```json
+{
+  "status": "UP",
+  "components": {
+    "db": {
+      "status": "UP",
+      "details": {
+        "database": "PostgreSQL",
+        "validationQuery": "isValid()"
+      }
+    },
+    "diskSpace": {
+      "status": "UP",
+      "details": {
+        "total": 500107862016,
+        "free": 354234232832,
+        "threshold": 10485760
+      }
+    }
+  }
+}
+```
+
+### Access
+
+All actuator endpoints are publicly accessible at:
+- **Base URL**: http://localhost:8080/actuator
+- **Health**: http://localhost:8080/actuator/health
+
+**Flyway Endpoint**: http://localhost:8080/actuator/flyway
+- View database migration status, history, and pending changes
