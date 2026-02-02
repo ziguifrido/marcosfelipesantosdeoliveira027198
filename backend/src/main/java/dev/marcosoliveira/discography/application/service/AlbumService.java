@@ -114,7 +114,6 @@ public class AlbumService {
         albumRepository.saveAndFlush(album);
     }
 
-
     @Transactional
     public void deleteAlbum(UUID albumId) {
         Album album = albumRepository.findById(albumId)

@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
@@ -30,6 +31,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/albums")
+@Tag(name = "Albums", description = "Endpoints for managing albums and their cover images")
 public class AlbumController {
 
     private final AlbumService albumService;
@@ -48,6 +50,8 @@ public class AlbumController {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved list of albums",
                     content = @Content(schema = @Schema(implementation = Page.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request parameters",
+                    content = @Content),
+            @ApiResponse(responseCode = "403", description = "Access forbidden - authentication required",
                     content = @Content)
     })
     @GetMapping
@@ -66,6 +70,8 @@ public class AlbumController {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved the album",
                     content = @Content(schema = @Schema(implementation = AlbumResponseDTO.class))),
             @ApiResponse(responseCode = "404", description = "Album not found with the given ID",
+                    content = @Content),
+            @ApiResponse(responseCode = "403", description = "Access forbidden - authentication required",
                     content = @Content)
     })
     @GetMapping("/{id}")
@@ -82,6 +88,8 @@ public class AlbumController {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved list of albums matching the title",
                     content = @Content(schema = @Schema(implementation = Page.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request parameters",
+                    content = @Content),
+            @ApiResponse(responseCode = "403", description = "Access forbidden - authentication required",
                     content = @Content)
     })
     @GetMapping("/title/{title}")
@@ -100,6 +108,8 @@ public class AlbumController {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved list of albums within the date range",
                     content = @Content(schema = @Schema(implementation = Page.class))),
             @ApiResponse(responseCode = "400", description = "Invalid date format or request parameters",
+                    content = @Content),
+            @ApiResponse(responseCode = "403", description = "Access forbidden - authentication required",
                     content = @Content)
     })
     @GetMapping("/releaseDate/")
@@ -120,6 +130,8 @@ public class AlbumController {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved list of albums associated with the artist",
                     content = @Content(schema = @Schema(implementation = Page.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request parameters",
+                    content = @Content),
+            @ApiResponse(responseCode = "403", description = "Access forbidden - authentication required",
                     content = @Content)
     })
     @GetMapping("/artist/{id}")
@@ -130,7 +142,6 @@ public class AlbumController {
         return ResponseEntity.ok(responsePage);
     }
 
-
     @Operation(
             summary = "Creates a new Album with cover image.",
             description = "This endpoint receives the title, release date, and artist IDs of an Album via JSON and its cover image via binary file."
@@ -139,6 +150,8 @@ public class AlbumController {
             @ApiResponse(responseCode = "201", description = "Album successfully created",
                     content = @Content(schema = @Schema(implementation = AlbumResponseDTO.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request data or file format",
+                    content = @Content),
+            @ApiResponse(responseCode = "403", description = "Access forbidden - requires ADMIN role",
                     content = @Content),
             @ApiResponse(responseCode = "404", description = "One or more artists not found with the given IDs",
                     content = @Content),
@@ -182,6 +195,8 @@ public class AlbumController {
                     content = @Content),
             @ApiResponse(responseCode = "400", description = "Invalid request data",
                     content = @Content),
+            @ApiResponse(responseCode = "403", description = "Access forbidden - requires ADMIN role",
+                    content = @Content),
             @ApiResponse(responseCode = "404", description = "Album or one or more artists not found with the given IDs",
                     content = @Content)
     })
@@ -200,6 +215,8 @@ public class AlbumController {
             @ApiResponse(responseCode = "204", description = "Cover image successfully uploaded",
                     content = @Content),
             @ApiResponse(responseCode = "400", description = "Invalid file format or size",
+                    content = @Content),
+            @ApiResponse(responseCode = "403", description = "Access forbidden - requires ADMIN role",
                     content = @Content),
             @ApiResponse(responseCode = "404", description = "Album not found with the given ID",
                     content = @Content),
@@ -227,6 +244,8 @@ public class AlbumController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Album successfully deleted",
+                    content = @Content),
+            @ApiResponse(responseCode = "403", description = "Access forbidden - requires ADMIN role",
                     content = @Content),
             @ApiResponse(responseCode = "404", description = "Album not found with the given ID",
                     content = @Content)

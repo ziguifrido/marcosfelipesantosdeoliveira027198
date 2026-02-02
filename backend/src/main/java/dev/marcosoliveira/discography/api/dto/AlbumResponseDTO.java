@@ -21,9 +21,10 @@ public class AlbumResponseDTO {
     private LocalDate releaseDate;
 
     @Schema(description = "URL of the cover image",
-            example = "http://localhost:9000/album-cover/album_b12c8456-f3a1-48e5-9c2d-123456789abc_1769909528493")
+            example = "http://localhost:9000/album-cover/album_123.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minio-admin%2F20250201%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250201T120000Z&X-Amz-Expires=1800&X-Amz-SignedHeaders=host&X-Amz-Signature=abc123")
     private String coverUrl;
 
     @Schema(description = "List of artist names associated with the album", example = "[\"Linkin Park\"]")
     private List<String> artistNames;
+
 }
