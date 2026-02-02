@@ -75,12 +75,29 @@ services:
       minio:
         condition: service_healthy
     entrypoint: /bin/sh
+    volumes:
+      - ./backend/src/main/resources/static/images:/images
     command: >
-      -c "mc alias set local http://minio.dev.local:9000 minio-admin minio-admin-password &&
-          mc mb --ignore-existing local/album-cover &&
-          mc anonymous set public local/album-cover &&
-          mc mb --ignore-existing local/artist-profile-image &&
-          mc anonymous set public local/artist-profile-image"
+      -c "mc alias set local http://minio.dev.local:9000 minio-admin minio-admin-password && \
+          mc mb --ignore-existing local/album-cover && \
+          mc anonymous set public local/album-cover && \
+          mc mb --ignore-existing local/artist-profile-image && \
+          mc anonymous set public local/artist-profile-image && \
+          mc cp /images/breakingbenjamin.jpg local/artist-profile-image/breakingbenjamin.jpg && \
+          mc cp /images/chevelle.jpg local/artist-profile-image/chevelle.jpg && \
+          mc cp /images/disturbed.jpg local/artist-profile-image/disturbed.jpg && \
+          mc cp /images/linkinpark.jpg local/artist-profile-image/linkinpark.jpg && \
+          mc cp /images/paparoach.jpg local/artist-profile-image/paparoach.jpg && \
+          mc cp /images/seether.jpg local/artist-profile-image/seether.jpg && \
+          mc cp /images/staind.jpg local/artist-profile-image/staind.jpg && \
+          mc cp /images/threedaysgrace.jpg local/artist-profile-image/threedaysgrace.jpg && \
+          mc cp /images/breakingbenjamin_dearagony.jpg local/album-cover/breakingbenjamin_dearagony.jpg && \
+          mc cp /images/breakingbenjamin_phobia.jpg local/album-cover/breakingbenjamin_phobia.jpg && \
+          mc cp /images/linkinpark_hybridtheory.jpg local/album-cover/linkinpark_hybridtheory.jpg && \
+          mc cp /images/linkinpark_meteora.jpg local/album-cover/linkinpark_meteora.jpg && \
+          mc cp /images/linkinpark_minutestomidnight.jpg local/album-cover/linkinpark_minutestomidnight.jpg && \
+          mc cp /images/threedaysgrace_lifestartsnow.jpg local/album-cover/threedaysgrace_lifestartsnow.jpg && \
+          mc cp /images/threedaysgrace_one-x.jpg local/album-cover/threedaysgrace_one-x.jpg"
     networks:
       - local-network
 

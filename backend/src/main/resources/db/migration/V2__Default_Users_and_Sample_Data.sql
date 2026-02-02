@@ -29,35 +29,35 @@ VALUES (
 
 -- Linkin Park
 INSERT INTO artist (id, name, genre, profile_image_bucket, profile_image_object_key, profile_image_content_type)
-VALUES ('550e8400-e29b-41d4-a716-446655440000', 'Linkin Park', 'Alternative Rock / Nu Metal', 'artist-profile-image', 'artist_550e8400-e29b-41d4-a716-446655440000.jpg', 'image/jpeg');
+VALUES ('550e8400-e29b-41d4-a716-446655440000', 'Linkin Park', 'Alternative Rock / Nu Metal', 'artist-profile-image', 'linkinpark.jpg', 'image/jpeg');
 
 -- Breaking Benjamin
 INSERT INTO artist (id, name, genre, profile_image_bucket, profile_image_object_key, profile_image_content_type)
-VALUES ('550e8400-e29b-41d4-a716-446655440001', 'Breaking Benjamin', 'Alternative Rock / Post-Grunge', 'artist-profile-image', 'artist_550e8400-e29b-41d4-a716-446655440001.jpg', 'image/jpeg');
+VALUES ('550e8400-e29b-41d4-a716-446655440001', 'Breaking Benjamin', 'Alternative Rock / Post-Grunge', 'artist-profile-image', 'breakingbenjamin.jpg', 'image/jpeg');
 
 -- Three Days Grace
 INSERT INTO artist (id, name, genre, profile_image_bucket, profile_image_object_key, profile_image_content_type)
-VALUES ('550e8400-e29b-41d4-a716-446655440002', 'Three Days Grace', 'Alternative Rock / Post-Grunge', 'artist-profile-image', 'artist_550e8400-e29b-41d4-a716-446655440002.jpg', 'image/jpeg');
+VALUES ('550e8400-e29b-41d4-a716-446655440002', 'Three Days Grace', 'Alternative Rock / Post-Grunge', 'artist-profile-image', 'threedaysgrace.jpg', 'image/jpeg');
 
 -- Seether
 INSERT INTO artist (id, name, genre, profile_image_bucket, profile_image_object_key, profile_image_content_type)
-VALUES ('550e8400-e29b-41d4-a716-446655440003', 'Seether', 'Alternative Rock / Post-Grunge', 'artist-profile-image', 'artist_550e8400-e29b-41d4-a716-446655440003.jpg', 'image/jpeg');
+VALUES ('550e8400-e29b-41d4-a716-446655440003', 'Seether', 'Alternative Rock / Post-Grunge', 'artist-profile-image', 'seether.jpg', 'image/jpeg');
 
 -- Disturbed
 INSERT INTO artist (id, name, genre, profile_image_bucket, profile_image_object_key, profile_image_content_type)
-VALUES ('550e8400-e29b-41d4-a716-446655440004', 'Disturbed', 'Heavy Metal / Alternative Metal', 'artist-profile-image', 'artist_550e8400-e29b-41d4-a716-446655440004.jpg', 'image/jpeg');
+VALUES ('550e8400-e29b-41d4-a716-446655440004', 'Disturbed', 'Heavy Metal / Alternative Metal', 'artist-profile-image', 'disturbed.jpg', 'image/jpeg');
 
 -- Chevelle
 INSERT INTO artist (id, name, genre, profile_image_bucket, profile_image_object_key, profile_image_content_type)
-VALUES ('550e8400-e29b-41d4-a716-446655440005', 'Chevelle', 'Alternative Rock / Hard Rock', 'artist-profile-image', 'artist_550e8400-e29b-41d4-a716-446655440005.jpg', 'image/jpeg');
+VALUES ('550e8400-e29b-41d4-a716-446655440005', 'Chevelle', 'Alternative Rock / Hard Rock', 'artist-profile-image', 'chevelle.jpg', 'image/jpeg');
 
 -- Staind
 INSERT INTO artist (id, name, genre, profile_image_bucket, profile_image_object_key, profile_image_content_type)
-VALUES ('550e8400-e29b-41d4-a716-446655440006', 'Staind', 'Alternative Rock / Nu Metal', 'artist-profile-image', 'artist_550e8400-e29b-41d4-a716-446655440006.jpg', 'image/jpeg');
+VALUES ('550e8400-e29b-41d4-a716-446655440006', 'Staind', 'Alternative Rock / Nu Metal', 'artist-profile-image', 'staind.jpg', 'image/jpeg');
 
 -- Papa Roach
 INSERT INTO artist (id, name, genre, profile_image_bucket, profile_image_object_key, profile_image_content_type)
-VALUES ('550e8400-e29b-41d4-a716-446655440007', 'Papa Roach', 'Alternative Rock / Nu Metal', 'artist-profile-image', 'artist_550e8400-e29b-41d4-a716-446655440007.jpg', 'image/jpeg');
+VALUES ('550e8400-e29b-41d4-a716-446655440007', 'Papa Roach', 'Alternative Rock / Nu Metal', 'artist-profile-image', 'paparoach.jpg', 'image/jpeg');
 
 -- =====================================================
 -- SAMPLE ALBUMS
@@ -65,27 +65,27 @@ VALUES ('550e8400-e29b-41d4-a716-446655440007', 'Papa Roach', 'Alternative Rock 
 
 -- Linkin Park Albums
 INSERT INTO album (id, title, release_date, cover_bucket, cover_object_key, cover_content_type)
-VALUES ('660e8400-e29b-41d4-a716-446655440000', 'Hybrid Theory', '2000-10-24', 'album-cover', 'album_660e8400-e29b-41d4-a716-446655440000.jpg', 'image/jpeg');
+VALUES ('660e8400-e29b-41d4-a716-446655440000', 'Hybrid Theory', '2000-10-24', 'album-cover', 'linkinpark_hybridtheory.jpg', 'image/jpeg');
 
 INSERT INTO album (id, title, release_date, cover_bucket, cover_object_key, cover_content_type)
-VALUES ('660e8400-e29b-41d4-a716-446655440001', 'Meteora', '2003-03-25', 'album-cover', 'album_660e8400-e29b-41d4-a716-446655440001.jpg', 'image/jpeg');
+VALUES ('660e8400-e29b-41d4-a716-446655440001', 'Meteora', '2003-03-25', 'album-cover', 'linkinpark_meteora.jpg', 'image/jpeg');
 
 INSERT INTO album (id, title, release_date, cover_bucket, cover_object_key, cover_content_type)
-VALUES ('660e8400-e29b-41d4-a716-446655440002', 'Minutes to Midnight', '2007-05-14', 'album-cover', 'album_660e8400-e29b-41d4-a716-446655440002.jpg', 'image/jpeg');
+VALUES ('660e8400-e29b-41d4-a716-446655440002', 'Minutes to Midnight', '2007-05-14', 'album-cover', 'linkinpark_minutestomidnight.jpg', 'image/jpeg');
 
 -- Breaking Benjamin Albums
 INSERT INTO album (id, title, release_date, cover_bucket, cover_object_key, cover_content_type)
-VALUES ('660e8400-e29b-41d4-a716-446655440010', 'Phobia', '2006-08-08', 'album-cover', 'album_660e8400-e29b-41d4-a716-446655440010.jpg', 'image/jpeg');
+VALUES ('660e8400-e29b-41d4-a716-446655440010', 'Phobia', '2006-08-08', 'album-cover', 'breakingbenjamin_phobia.jpg', 'image/jpeg');
 
 INSERT INTO album (id, title, release_date, cover_bucket, cover_object_key, cover_content_type)
-VALUES ('660e8400-e29b-41d4-a716-446655440011', 'Dear Agony', '2009-09-29', 'album-cover', 'album_660e8400-e29b-41d4-a716-446655440011.jpg', 'image/jpeg');
+VALUES ('660e8400-e29b-41d4-a716-446655440011', 'Dear Agony', '2009-09-29', 'album-cover', 'breakingbenjamin_dearagony.jpg', 'image/jpeg');
 
 -- Three Days Grace Albums
 INSERT INTO album (id, title, release_date, cover_bucket, cover_object_key, cover_content_type)
-VALUES ('660e8400-e29b-41d4-a716-446655440020', 'One-X', '2006-06-13', 'album-cover', 'album_660e8400-e29b-41d4-a716-446655440020.jpg', 'image/jpeg');
+VALUES ('660e8400-e29b-41d4-a716-446655440020', 'One-X', '2006-06-13', 'album-cover', 'threedaysgrace_one-x.jpg', 'image/jpeg');
 
 INSERT INTO album (id, title, release_date, cover_bucket, cover_object_key, cover_content_type)
-VALUES ('660e8400-e29b-41d4-a716-446655440021', 'Life Starts Now', '2009-09-22', 'album-cover', 'album_660e8400-e29b-41d4-a716-446655440021.jpg', 'image/jpeg');
+VALUES ('660e8400-e29b-41d4-a716-446655440021', 'Life Starts Now', '2009-09-22', 'album-cover', 'threedaysgrace_lifestartsnow.jpg', 'image/jpeg');
 
 -- =====================================================
 -- ARTIST-ALBUM RELATIONSHIPS
