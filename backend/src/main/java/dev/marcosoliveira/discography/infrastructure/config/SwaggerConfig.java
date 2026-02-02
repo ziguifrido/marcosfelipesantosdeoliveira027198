@@ -62,4 +62,24 @@ public class SwaggerConfig {
                 .pathsToMatch("/api/v1/**")
                 .build();
     }
+
+    @Bean
+    public OperationCustomizer pageableCustomizer() {
+        return (operation, handlerMethod) -> {
+            if (operation.getParameters() != null) {
+                operation.getParameters().forEach(param -> {
+                    if (param.getName() != null && (
+                            param.getName().equals("page") ||
+                            param.getName().equals("size") ||
+                            param.getName().equals("sort"))) {
+                        param.setRequired(false);
+                        if (param.getSchema() != null) {
+                            param.getSchema().setNullable(true);
+                        }
+                    }
+                });
+            }
+            return operation;
+        };
+    }
 }

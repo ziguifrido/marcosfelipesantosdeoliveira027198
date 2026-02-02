@@ -23,4 +23,5 @@ public class ArtistRequestDTO {
             requiredMode = Schema.RequiredMode.REQUIRED
     )
     private String genre;
+
 }

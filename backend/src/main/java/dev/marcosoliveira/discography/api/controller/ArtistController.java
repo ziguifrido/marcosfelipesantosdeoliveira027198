@@ -12,11 +12,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +30,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/artists")
+@Tag(name = "Artists", description = "Endpoints for managing artists and their profile images")
 public class ArtistController {
 
     private final ArtistService artistService;
@@ -46,8 +49,11 @@ public class ArtistController {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved list of artists",
                     content = @Content(schema = @Schema(implementation = Page.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request parameters",
+                    content = @Content),
+            @ApiResponse(responseCode = "403", description = "Access forbidden - authentication required",
                     content = @Content)
     })
+    @Transactional(readOnly = true)
     @GetMapping
     public ResponseEntity<Page<ArtistResponseDTO>> findAll(
             @ParameterObject @PageableDefault(sort = "name") Pageable pageable) {
@@ -64,8 +70,11 @@ public class ArtistController {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved the artist",
                     content = @Content(schema = @Schema(implementation = ArtistResponseDTO.class))),
             @ApiResponse(responseCode = "404", description = "Artist not found with the given ID",
+                    content = @Content),
+            @ApiResponse(responseCode = "403", description = "Access forbidden - authentication required",
                     content = @Content)
     })
+    @Transactional(readOnly = true)
     @GetMapping("/{id}")
     public ResponseEntity<ArtistResponseDTO> findById(@PathVariable UUID id) {
         Artist artist = artistService.findById(id);
@@ -80,8 +89,11 @@ public class ArtistController {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved list of artists matching the name",
                     content = @Content(schema = @Schema(implementation = Page.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request parameters",
+                    content = @Content),
+            @ApiResponse(responseCode = "403", description = "Access forbidden - authentication required",
                     content = @Content)
     })
+    @Transactional(readOnly = true)
     @GetMapping("/name/{name}")
     public ResponseEntity<Page<ArtistResponseDTO>> findByName(
             @PathVariable String name, @ParameterObject @PageableDefault(sort = "name") Pageable pageable) {
@@ -98,8 +110,11 @@ public class ArtistController {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved list of artists matching the genre",
                     content = @Content(schema = @Schema(implementation = Page.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request parameters",
+                    content = @Content),
+            @ApiResponse(responseCode = "403", description = "Access forbidden - authentication required",
                     content = @Content)
     })
+    @Transactional(readOnly = true)
     @GetMapping("/genre/{genre}")
     public ResponseEntity<Page<ArtistResponseDTO>> findByGenre(
             @PathVariable String genre, @ParameterObject @PageableDefault(sort = "name") Pageable pageable) {
@@ -116,8 +131,11 @@ public class ArtistController {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved list of artists associated with the album",
                     content = @Content(schema = @Schema(implementation = Page.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request parameters",
+                    content = @Content),
+            @ApiResponse(responseCode = "403", description = "Access forbidden - authentication required",
                     content = @Content)
     })
+    @Transactional(readOnly = true)
     @GetMapping("/album/{id}")
     public ResponseEntity<Page<ArtistResponseDTO>> findByAlbumId(
             @PathVariable UUID id, @ParameterObject @PageableDefault(sort = "name") Pageable pageable) {
@@ -134,6 +152,8 @@ public class ArtistController {
             @ApiResponse(responseCode = "201", description = "Artist successfully created",
                     content = @Content(schema = @Schema(implementation = ArtistResponseDTO.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request data or file format",
+                    content = @Content),
+            @ApiResponse(responseCode = "403", description = "Access forbidden - requires ADMIN role",
                     content = @Content),
             @ApiResponse(responseCode = "415", description = "Unsupported media type for the uploaded file",
                     content = @Content)
@@ -174,6 +194,8 @@ public class ArtistController {
                     content = @Content),
             @ApiResponse(responseCode = "400", description = "Invalid request data",
                     content = @Content),
+            @ApiResponse(responseCode = "403", description = "Access forbidden - requires ADMIN role",
+                    content = @Content),
             @ApiResponse(responseCode = "404", description = "Artist not found with the given ID",
                     content = @Content)
     })
@@ -193,6 +215,8 @@ public class ArtistController {
                     content = @Content),
             @ApiResponse(responseCode = "400", description = "Invalid file format or size",
                     content = @Content),
+            @ApiResponse(responseCode = "403", description = "Access forbidden - requires ADMIN role",
+                    content = @Content),
             @ApiResponse(responseCode = "404", description = "Artist not found with the given ID",
                     content = @Content),
             @ApiResponse(responseCode = "415", description = "Unsupported media type for the uploaded file",
@@ -211,6 +235,8 @@ public class ArtistController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Artist successfully deleted",
+                    content = @Content),
+            @ApiResponse(responseCode = "403", description = "Access forbidden - requires ADMIN role",
                     content = @Content),
             @ApiResponse(responseCode = "404", description = "Artist not found with the given ID",
                     content = @Content)
