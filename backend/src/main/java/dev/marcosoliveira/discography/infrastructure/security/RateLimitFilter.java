@@ -28,6 +28,14 @@ public class RateLimitFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
+        String requestUri = httpRequest.getRequestURI();
+        
+        if (requestUri.contains("/swagger-ui") ||
+            requestUri.contains("/scalar")) {
+            chain.doFilter(request, response);
+            return;
+        }
+
         String clientIp = getClientIp(httpRequest);
         Bucket bucket = buckets.computeIfAbsent(clientIp, this::createNewBucket);
 
