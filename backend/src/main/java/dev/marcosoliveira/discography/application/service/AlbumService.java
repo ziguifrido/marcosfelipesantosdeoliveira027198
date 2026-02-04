@@ -1,11 +1,13 @@
 package dev.marcosoliveira.discography.application.service;
 
+import dev.marcosoliveira.discography.domain.event.AlbumCreatedEvent;
 import dev.marcosoliveira.discography.domain.exception.ResourceNotFoundException;
 import dev.marcosoliveira.discography.domain.model.Album;
 import dev.marcosoliveira.discography.domain.model.Artist;
 import dev.marcosoliveira.discography.domain.model.ImageReference;
 import dev.marcosoliveira.discography.domain.repository.AlbumRepository;
 import dev.marcosoliveira.discography.domain.repository.ArtistRepository;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -24,12 +26,15 @@ public class AlbumService {
     private final ArtistRepository artistRepository;
     private final AlbumRepository albumRepository;
     private final StorageService storageService;
+    private final ApplicationEventPublisher eventPublisher;
 
     public AlbumService(ArtistRepository artistRepository,
-                              AlbumRepository albumRepository, StorageService storageService) {
+                              AlbumRepository albumRepository, StorageService storageService,
+                              ApplicationEventPublisher eventPublisher) {
         this.artistRepository = artistRepository;
         this.albumRepository = albumRepository;
         this.storageService = storageService;
+        this.eventPublisher = eventPublisher;
     }
 
     public Page<Album> findAll(Pageable pageable) {
@@ -76,7 +81,11 @@ public class AlbumService {
 
         artistRepository.saveAll(artists);
 
-        return albumRepository.saveAndFlush(album);
+        Album savedAlbum = albumRepository.saveAndFlush(album);
+
+        eventPublisher.publishEvent(new AlbumCreatedEvent(this, savedAlbum));
+
+        return savedAlbum;
     }
 
     @Transactional

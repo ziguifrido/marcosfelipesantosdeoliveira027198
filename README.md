@@ -1,6 +1,6 @@
 # SEPLAG-MT 2026 Backend Challenge - Marcos Oliveira
 
-Backend API solution (Java/Spring Boot) for the SEPLAG-MT 2026 challenge. Implements JWT authentication, image upload to MinIO, rate limiting, and comprehensive API documentation.
+Backend API solution (Java/Spring Boot) for the SEPLAG-MT 2026 challenge. Implements JWT authentication, image upload to MinIO, flyway migration, rate limiting, health check, websocket notification and comprehensive API documentation.
 
 ## Getting Started
 
@@ -30,13 +30,13 @@ This will start the following services in the background:
 
 The `docker-compose.yml` file defines the following services:
 
-| Service         | Description                                      | Port(s) | Credentials / URL                                                                                                                   |
-|-----------------|--------------------------------------------------|---------|-------------------------------------------------------------------------------------------------------------------------------------|
-| **PostgreSQL**  | Relational database for storing data.            | `5432`  | **Database**: `discography_db`<br>**User**: `postgres-user`<br>**Password**: `postgres-password`                                    |
-| **pgAdmin**     | Web-based administration console for PostgreSQL. | `8083`  | **Email**: `pgadmin@mail.com`<br>**Password**: `pgadmin-password`<br>**URL**: http://localhost:8083                                 |
-| **MinIO**       | S3-compatible object storage (internal).         | `9001`  | **User**: `minio-admin`<br>**Password**: `minio-admin-password`<br>**Admin Console**: http://localhost:9001                         |
-| **nginx-minio** | Reverse proxy for MinIO presigned URLs.          | `9000`  | Proxies requests from localhost:9000 to MinIO container                                                                             |
-| **Backend**     | Spring Boot REST API.                            | `8080`  | **URL**: http://localhost:8080<br>**Swagger UI**: http://localhost:8080/swagger-ui.html<br>**Scalar**: http://localhost:8080/scalar |
+| Service              | Description                                        | Port(s) | Credentials / URL                                                                                                                                                                     |
+|----------------------|----------------------------------------------------|---------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **PostgreSQL**       | Relational database for storing data.              | `5432`  | **Database**: `discography_db`<br>**User**: `postgres-user`<br>**Password**: `postgres-password`                                                                                      |
+| **pgAdmin**          | Web-based administration console for PostgreSQL.   | `8083`  | **Email**: `pgadmin@mail.com`<br>**Password**: `pgadmin-password`<br>**URL**: http://localhost:8083                                                                                   |
+| **MinIO**            | S3-compatible object storage (internal).           | `9001`  | **User**: `minio-admin`<br>**Password**: `minio-admin-password`<br>**Admin Console**: http://localhost:9001                                                                           |
+| **nginx-minio**      | Reverse proxy for MinIO presigned URLs.            | `9000`  | Proxies requests from localhost:9000 to MinIO container                                                                                                                               |
+| **Backend**          | Spring Boot REST API.                              | `8080`  | **URL**: http://localhost:8080<br>**Swagger UI**: http://localhost:8080/swagger-ui.html<br>**Scalar**: http://localhost:8080/scalar<br>**WebSocket**: ws://localhost:8080/ws-registry |
 
 The `minio-setup` service will automatically create buckets named `album-cover` and `artist-profile-image` and set their access policies to public.
 
@@ -92,6 +92,7 @@ Scalar offers a modern, beautiful alternative API documentation interface:
 Both interfaces provide complete documentation for:
 - **Artist Management**: Create, read, update, delete artists with pagination support and image uploads
 - **Album Management**: Full CRUD operations for albums with release date filtering and cover image uploads
+- **WebSocket Notifications**: Real-time album creation notifications via STOMP protocol
 - **Request/Response Models**: Detailed schemas with validation rules, examples, and field descriptions
 - **HTTP Status Codes**: Complete list of possible responses (200, 201, 204, 400, 404, 415)
 
@@ -277,3 +278,57 @@ All actuator endpoints are publicly accessible at:
 
 **Flyway Endpoint**: http://localhost:8080/actuator/flyway
 - View database migration status, history, and pending changes
+
+## WebSocket Real-Time Notifications
+
+The application implements a **WebSocket notification system** using STOMP protocol to provide real-time updates when new albums are created.
+
+### Overview
+
+- **Protocol**: STOMP (Simple Text Oriented Messaging Protocol)
+- **Message Broker**: Simple in-memory broker for topic-based messaging
+- **Architecture**: Domain-Driven Design (DDD) with clean separation of concerns
+- **Transaction Awareness**: Notifications only sent after successful database commit
+
+### WebSocket Endpoints
+
+| Endpoint        | Description                                       | Access       |
+|-----------------|---------------------------------------------------|--------------|
+| `/ws-registry`  | WebSocket handshake endpoint with SockJS fallback | WebSocket    |
+| `/topic/albums` | Topic for receiving album creation notifications  | Subscription |
+
+### Message Format
+
+When a new album is created, clients receive a message on `/topic/albums` with the following structure:
+
+```json
+{
+  "id": "550e8400-e29b-41d4-a716-446655440001",
+  "title": "Hybrid Theory",
+  "releaseDate": "2000-10-24",
+  "coverUrl": "http://localhost:9000/album-cover/album_123.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256...",
+  "artistNames": ["Linkin Park"]
+}
+```
+
+### Architecture Implementation
+
+The WebSocket system follows **Domain-Driven Design (DDD)** principles:
+
+1. **Domain Layer** (`domain/event/`):
+   - `AlbumCreatedEvent`: Domain event carrying album data after creation
+
+2. **Application Layer** (`application/service/`):
+   - `AlbumService`: Publishes `AlbumCreatedEvent` using `ApplicationEventPublisher` after successful album persistence
+
+3. **Infrastructure Layer** (`infrastructure/`):
+   - `WebSocketConfig`: STOMP broker configuration with `/app` prefix and `/topic` broker
+   - `AlbumNotificationHandler`: Listens for `AlbumCreatedEvent` and broadcasts to `/topic/albums` using `@TransactionalEventListener(phase = AFTER_COMMIT)`
+
+### Key Features
+
+- **Transaction Safety**: Notifications only sent after database transaction commit
+- **Decoupled Design**: Domain events separate business logic from messaging concerns
+- **Clean Architecture**: Infrastructure layer handles messaging protocol, keeping domain pure
+- **Payload Consistency**: Uses `AlbumResponseDTO` for consistent API and WebSocket messages
+- **Error Resilience**: Automatic reconnection via SockJS fallback

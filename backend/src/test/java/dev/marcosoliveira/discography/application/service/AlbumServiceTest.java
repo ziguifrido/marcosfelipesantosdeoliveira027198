@@ -1,5 +1,6 @@
 package dev.marcosoliveira.discography.application.service;
 
+import dev.marcosoliveira.discography.domain.event.AlbumCreatedEvent;
 import dev.marcosoliveira.discography.domain.exception.ResourceNotFoundException;
 import dev.marcosoliveira.discography.domain.model.Album;
 import dev.marcosoliveira.discography.domain.model.Artist;
@@ -8,9 +9,11 @@ import dev.marcosoliveira.discography.domain.repository.AlbumRepository;
 import dev.marcosoliveira.discography.domain.repository.ArtistRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -34,6 +37,9 @@ class AlbumServiceTest {
 
     @Mock
     private StorageService storageService;
+
+    @Mock
+    private ApplicationEventPublisher eventPublisher;
 
     @InjectMocks
     private AlbumService albumService;
@@ -103,6 +109,27 @@ class AlbumServiceTest {
         assertThrows(ResourceNotFoundException.class, () ->
                 albumService.uploadAlbumCover(id, null, "image/png")
         );
+    }
+
+    @Test
+    void createAlbum_ShouldPublishAlbumCreatedEvent() {
+        UUID artistId = UUID.randomUUID();
+        String title = "Live in Texas";
+        LocalDate releaseDate = LocalDate.of(2003, 11, 18);
+
+        Artist artist = Artist.record("Linkin Park", "Rock");
+        when(artistRepository.findAllById(any())).thenReturn(List.of(artist));
+        when(albumRepository.saveAndFlush(any(Album.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        Album album = albumService.createAlbum(title, releaseDate, List.of(artistId));
+
+        ArgumentCaptor<AlbumCreatedEvent> eventCaptor = ArgumentCaptor.forClass(AlbumCreatedEvent.class);
+        verify(eventPublisher).publishEvent(eventCaptor.capture());
+
+        AlbumCreatedEvent capturedEvent = eventCaptor.getValue();
+        assertNotNull(capturedEvent);
+        assertEquals(album, capturedEvent.getAlbum());
     }
 
 }
