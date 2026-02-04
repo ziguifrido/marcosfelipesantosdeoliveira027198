@@ -21,16 +21,19 @@ services:
 
   pgadmin:
     container_name: pgadmin.dev.local
-    image: docker.io/dpage/pgadmin4:9.5
+    image: docker.io/dpage/pgadmin4:9.11
     depends_on:
       - postgres
     environment:
-      PGADMIN_DEFAULT_EMAIL: pgadmin@mail.com
-      PGADMIN_DEFAULT_PASSWORD: pgadmin-password
+      - PGADMIN_DEFAULT_EMAIL=pgadmin@mail.com
+      - PGADMIN_DEFAULT_PASSWORD=pgadmin-password
+      - PGADMIN_CONFIG_SERVER_MODE=False
+      - PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED=False
     ports:
       - "8083:80"
+    user: root
     volumes:
-      - pgadmin-data:/var/lib/pgadmin
+      - ./pgadmin-servers.json:/pgadmin4/servers.json
     networks:
       - local-network
 
