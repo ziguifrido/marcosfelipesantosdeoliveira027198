@@ -118,11 +118,12 @@ Scalar offers a modern, beautiful alternative API documentation interface:
 - Better mobile responsiveness
 
 Both interfaces provide complete documentation for:
+- **Authentication**: Authenticate to gains access to the other endpoints
 - **Artist Management**: Create, read, update, delete artists with pagination support and image uploads
 - **Album Management**: Full CRUD operations for albums with release date filtering and cover image uploads
-- **WebSocket Notifications**: Real-time album creation notifications via STOMP protocol
+- **Regional Synchronization**: Triggers the Regional synchronization routine
 - **Request/Response Models**: Detailed schemas with validation rules, examples, and field descriptions
-- **HTTP Status Codes**: Complete list of possible responses (200, 201, 204, 400, 404, 415)
+- **HTTP Status Codes**: Complete list of possible responses (200, 201, 204, 400, 404, 415, 429, 500)
 
 The API documentation is automatically generated from the Spring annotations (`@Operation`, `@ApiResponse`, `@Schema`) in the controller and DTO classes.
 
