@@ -39,8 +39,20 @@ CREATE TABLE IF NOT EXISTS album_artists (
     FOREIGN KEY (artist_id) REFERENCES artist(id) ON DELETE CASCADE
 );
 
+-- Create Regional table
+CREATE TABLE IF NOT EXISTS regional (
+      id_internal UUID PRIMARY KEY,
+      id INTEGER NOT NULL,
+      nome VARCHAR(200) NOT NULL,
+      ativo BOOLEAN NOT NULL,
+      created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+      updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL
+);
+
 -- Create indexes for better performance
 CREATE INDEX IF NOT EXISTS idx_artist_name ON artist(name);
 CREATE INDEX IF NOT EXISTS idx_album_title ON album(title);
 CREATE INDEX IF NOT EXISTS idx_album_release_date ON album(release_date);
 CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);
+CREATE INDEX IF NOT EXISTS idx_regional_ativo ON regional(ativo);
+

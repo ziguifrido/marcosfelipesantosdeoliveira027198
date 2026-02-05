@@ -50,3 +50,8 @@ springdoc:
     enabled: true
     path: /scalar
 
+external:
+  api:
+    regional:
+      url: https://integrador-argus-api.geia.vip
+
