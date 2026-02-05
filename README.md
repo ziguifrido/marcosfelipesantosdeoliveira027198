@@ -1,6 +1,15 @@
 # SEPLAG-MT 2026 Backend Challenge - Marcos Oliveira
 
+![GitHub top language](https://img.shields.io/github/languages/top/ziguifrido/marcosfelipesantosdeoliveira027198)
+![GitHub License](https://img.shields.io/github/license/ziguifrido/marcosfelipesantosdeoliveira027198)
+![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/ziguifrido/marcosfelipesantosdeoliveira027198)
+![GitHub last commit](https://img.shields.io/github/last-commit/ziguifrido/marcosfelipesantosdeoliveira027198)
+
 Backend API solution (Java/Spring Boot) for the SEPLAG-MT 2026 challenge. Implements JWT authentication, image upload to MinIO, flyway migration, rate limiting, health check, websocket notification and comprehensive API documentation.
+
+- **Name**: Marcos Felipe Santos de Oliveira
+- **Registration Number**: 16461
+- **Position**: Analista de Tecnologia da Informação - Engenheiro da Computação Sênior
 
 ## Documentation
 
@@ -44,6 +53,20 @@ The `docker-compose.yml` file defines the following services:
 | **Backend**          | Spring Boot REST API.                              | `8080`  | **URL**: http://localhost:8080<br>**Swagger UI**: http://localhost:8080/swagger-ui.html<br>**Scalar**: http://localhost:8080/scalar<br>**WebSocket**: ws://localhost:8080/ws-registry |
 
 The `minio-setup` service will automatically create buckets named `album-cover` and `artist-profile-image` and set their access policies to public.
+
+### Testing
+
+To test the API endpoints there are two options available:
+
+- Swagger UI:  http://localhost:8080/swagger-ui.html
+- Scalar: http://localhost:8080/scalar
+
+There are two default users, with different roles, ready for testing:
+
+| Username | Password | Role  | Permissions            |
+|----------|----------|-------|------------------------|
+| admin    | admin123 | ADMIN | GET, POST, PUT, DELETE |
+| user     | user123  | USER  | GET                    |
 
 ### MinIO Nginx Proxy
 
@@ -337,3 +360,7 @@ The WebSocket system follows **Domain-Driven Design (DDD)** principles:
 - **Clean Architecture**: Infrastructure layer handles messaging protocol, keeping domain pure
 - **Payload Consistency**: Uses `AlbumResponseDTO` for consistent API and WebSocket messages
 - **Error Resilience**: Automatic reconnection via SockJS fallback
+
+## License
+
+- [MIT](LICENSE)
