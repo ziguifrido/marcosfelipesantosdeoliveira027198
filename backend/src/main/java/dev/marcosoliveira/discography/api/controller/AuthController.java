@@ -39,7 +39,8 @@ public class AuthController {
             @ApiResponse(responseCode = "400", description = "Invalid request data",
                     content = @Content),
             @ApiResponse(responseCode = "401", description = "Invalid credentials",
-                    content = @Content)
+                    content = @Content),
+            @ApiResponse(responseCode = "429", description = "Too Many Requests", content = @Content),
     })
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDTO> login(@Valid @RequestBody AuthRequestDTO request) {
@@ -55,7 +56,8 @@ public class AuthController {
             @ApiResponse(responseCode = "201", description = "Successfully registered",
                     content = @Content(schema = @Schema(implementation = AuthResponseDTO.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request data or username already exists",
-                    content = @Content)
+                    content = @Content),
+            @ApiResponse(responseCode = "429", description = "Too Many Requests", content = @Content),
     })
     @PostMapping("/register")
     public ResponseEntity<AuthResponseDTO> register(@Valid @RequestBody AuthRequestDTO request) {
@@ -73,7 +75,8 @@ public class AuthController {
             @ApiResponse(responseCode = "400", description = "Invalid refresh token",
                     content = @Content),
             @ApiResponse(responseCode = "401", description = "Refresh token expired or invalid",
-                    content = @Content)
+                    content = @Content),
+            @ApiResponse(responseCode = "429", description = "Too Many Requests", content = @Content),
     })
     @PostMapping("/refresh")
     public ResponseEntity<AuthResponseDTO> refresh(@Valid @RequestBody RefreshRequestDTO request) {

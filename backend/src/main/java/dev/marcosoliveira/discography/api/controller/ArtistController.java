@@ -51,7 +51,8 @@ public class ArtistController {
             @ApiResponse(responseCode = "400", description = "Invalid request parameters",
                     content = @Content),
             @ApiResponse(responseCode = "403", description = "Access forbidden - authentication required",
-                    content = @Content)
+                    content = @Content),
+            @ApiResponse(responseCode = "429", description = "Too Many Requests", content = @Content),
     })
     @Transactional(readOnly = true)
     @GetMapping
@@ -72,7 +73,8 @@ public class ArtistController {
             @ApiResponse(responseCode = "404", description = "Artist not found with the given ID",
                     content = @Content),
             @ApiResponse(responseCode = "403", description = "Access forbidden - authentication required",
-                    content = @Content)
+                    content = @Content),
+            @ApiResponse(responseCode = "429", description = "Too Many Requests", content = @Content),
     })
     @Transactional(readOnly = true)
     @GetMapping("/{id}")
@@ -91,7 +93,8 @@ public class ArtistController {
             @ApiResponse(responseCode = "400", description = "Invalid request parameters",
                     content = @Content),
             @ApiResponse(responseCode = "403", description = "Access forbidden - authentication required",
-                    content = @Content)
+                    content = @Content),
+            @ApiResponse(responseCode = "429", description = "Too Many Requests", content = @Content),
     })
     @Transactional(readOnly = true)
     @GetMapping("/name/{name}")
@@ -112,7 +115,8 @@ public class ArtistController {
             @ApiResponse(responseCode = "400", description = "Invalid request parameters",
                     content = @Content),
             @ApiResponse(responseCode = "403", description = "Access forbidden - authentication required",
-                    content = @Content)
+                    content = @Content),
+            @ApiResponse(responseCode = "429", description = "Too Many Requests", content = @Content),
     })
     @Transactional(readOnly = true)
     @GetMapping("/genre/{genre}")
@@ -133,7 +137,8 @@ public class ArtistController {
             @ApiResponse(responseCode = "400", description = "Invalid request parameters",
                     content = @Content),
             @ApiResponse(responseCode = "403", description = "Access forbidden - authentication required",
-                    content = @Content)
+                    content = @Content),
+            @ApiResponse(responseCode = "429", description = "Too Many Requests", content = @Content),
     })
     @Transactional(readOnly = true)
     @GetMapping("/album/{id}")
@@ -156,7 +161,8 @@ public class ArtistController {
             @ApiResponse(responseCode = "403", description = "Access forbidden - requires ADMIN role",
                     content = @Content),
             @ApiResponse(responseCode = "415", description = "Unsupported media type for the uploaded file",
-                    content = @Content)
+                    content = @Content),
+            @ApiResponse(responseCode = "429", description = "Too Many Requests", content = @Content),
     })
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @RequestBody(
@@ -197,7 +203,8 @@ public class ArtistController {
             @ApiResponse(responseCode = "403", description = "Access forbidden - requires ADMIN role",
                     content = @Content),
             @ApiResponse(responseCode = "404", description = "Artist not found with the given ID",
-                    content = @Content)
+                    content = @Content),
+            @ApiResponse(responseCode = "429", description = "Too Many Requests", content = @Content),
     })
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateArtist(@PathVariable UUID id,
@@ -220,7 +227,8 @@ public class ArtistController {
             @ApiResponse(responseCode = "404", description = "Artist not found with the given ID",
                     content = @Content),
             @ApiResponse(responseCode = "415", description = "Unsupported media type for the uploaded file",
-                    content = @Content)
+                    content = @Content),
+            @ApiResponse(responseCode = "429", description = "Too Many Requests", content = @Content),
     })
     @PutMapping("/{id}/profileImage")
     public ResponseEntity<Void> uploadProfileImage(
@@ -239,7 +247,8 @@ public class ArtistController {
             @ApiResponse(responseCode = "403", description = "Access forbidden - requires ADMIN role",
                     content = @Content),
             @ApiResponse(responseCode = "404", description = "Artist not found with the given ID",
-                    content = @Content)
+                    content = @Content),
+            @ApiResponse(responseCode = "429", description = "Too Many Requests", content = @Content),
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
