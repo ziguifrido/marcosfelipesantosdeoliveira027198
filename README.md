@@ -2,6 +2,11 @@
 
 Backend API solution (Java/Spring Boot) for the SEPLAG-MT 2026 challenge. Implements JWT authentication, image upload to MinIO, flyway migration, rate limiting, health check, websocket notification and comprehensive API documentation.
 
+## Documentation
+
+### Architecture Documentation
+For detailed information about the Domain-Driven Design (DDD) architecture, including strategic mapping, bounded contexts, and layer intentions, see the [Strategic Mapping - DDD](docs/Strategic-Mapping-DDD.md) documentation.
+
 ## Getting Started
 
 This project is containerized using Docker and can be easily set up for local development.
